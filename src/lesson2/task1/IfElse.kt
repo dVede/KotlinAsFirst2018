@@ -106,7 +106,8 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
             ((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2)) -> 3
             ((kingX == rookX1) || (kingY == rookY1)) -> 1
             ((kingX == rookX2) || (kingY == rookY2)) -> 2
-            else -> 0}
+            else -> 0
+        }
 
 
 /**
@@ -121,14 +122,13 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int {
-    return when {
-        (Math.abs(kingX - bishopX) == Math.abs(kingY - bishopY)) && ((kingX == rookX) || (kingY == rookY)) -> 3
-        Math.abs(kingX - bishopX) == Math.abs(kingY - bishopY) -> 2
-        ((kingX == rookX) || (kingY == rookY)) -> 1
-        else -> 0
-    }
-}
+                          bishopX: Int, bishopY: Int): Int =
+        when {
+            (Math.abs(kingX - bishopX) == Math.abs(kingY - bishopY)) && ((kingX == rookX) || (kingY == rookY)) -> 3
+            Math.abs(kingX - bishopX) == Math.abs(kingY - bishopY) -> 2
+            ((kingX == rookX) || (kingY == rookY)) -> 1
+            else -> 0
+        }
 
 /**
  * Простая
