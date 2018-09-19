@@ -1,8 +1,11 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson3.task1
 
 import lesson1.task1.sqr
 import kotlin.concurrent.timerTask
+import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.sqrt
 
 /**
@@ -71,15 +74,17 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var num = n
     var i = 0
-    if (n == 0) return 1
-    else if (n == Int.MAX_VALUE) return 10
-    else
-        while (num != 0) {
-            i += 1
-            num /= 10
-        }
+    when {
+        (n == 0) -> i = 1
+        else ->
+            while (num != 0) {
+                i += 1
+                num /= 10
+            }
+    }
     return i
 }
+
 /**
  * Простая
  *
@@ -108,8 +113,8 @@ fun lcm(m: Int, n: Int): Int {
     var n1 = n
     val mn = m * n
     while (m1 != n1) {
-        if (m1 > n1) m1 = m1 - n1
-        else n1 = n1 - m1
+        if (m1 > n1) m1 -= n1
+        else n1 -= m1
     }
     return mn / m1
 }
@@ -121,7 +126,9 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var x = 2
-    while (n % x != 0) x += 1
+    val z = sqrt(n.toDouble())
+    for (i in 1..z.toInt())
+        while (n % x != 0) x++
     return x
 }
 
@@ -130,11 +137,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var x = n / 2
-    while (n % x != 0) x -= 1
-    return x
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -147,11 +150,12 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     var n1 = n
     var m1 = m
     while ((m1 != 0) && (n1 != 0)) {
-        if (m1 > n1) m1 = m1 % n1
-        else n1 = n1 % m1
+        if (m1 > n1) m1 %= n1
+        else n1 %= m1
     }
     m1 += n1
-return m1 == 1}
+    return m1 == 1
+}
 
 /**
  * Простая
@@ -160,13 +164,8 @@ return m1 == 1}
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean{
-    for (i in m..n) {
-        if (Math.sqrt(i.toDouble()).toInt() * Math.sqrt(i.toDouble()).toInt() ==
-                (Math.sqrt(i.toDouble()) * Math.sqrt(i.toDouble())).toInt()) return true
-    }
-    return false
-}
+fun squareBetweenExists(m: Int, n: Int): Boolean =
+        (ceil(Math.sqrt(Math.min(m, n).toDouble())) <= floor(Math.sqrt(Math.max(m, n).toDouble())))
 
 /**
  * Средняя
@@ -189,7 +188,7 @@ fun collatzSteps(x: Int): Int {
     var x1 = x
     while (x1 != 1) {
         step += 1
-        if (x1 % 2 == 0) x1 = x1 / 2
+        if (x1 % 2 == 0) x1 /= 2
         else x1 = 3 * x1 + 1
     }
     return step
@@ -203,7 +202,6 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double = TODO()
-
 
 
 /**
@@ -227,9 +225,11 @@ fun revert(n: Int): Int {
     var n1 = n
     while (n1 > 0) {
         a = a * 10 + n1 % 10
-        n1 /= 10}
+        n1 /= 10
+    }
     return a
 }
+
 /**
  * Средняя
  *
@@ -241,7 +241,7 @@ fun revert(n: Int): Int {
  */
 fun isPalindrome(n: Int): Boolean {
     val a = revert(n)
-return (a == n)
+    return (a == n)
 }
 
 /**
@@ -254,11 +254,10 @@ return (a == n)
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var n1 = n
-    var p = n1 % 10
+    val p = n1 % 10
     n1 /= 10
     while (n1 > 0) {
         if (n1 % 10 != p) return true
-        p = n1 % 10
         n1 /= 10
     }
     return false
@@ -273,14 +272,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int {
-    var i = 0
-    var num = 0
-    while (num < n) {
-        i += 1
-        num += digitNumber(sqr(i))
-    }
-    if (num == n) return (sqr(i) % 10)
+fun SequenceDigit(n: Int, x: Int, num: Int): Int {
+    return if (num == n) (x % 10)
     else {
         var over = num - n
         var m = 10
@@ -288,8 +281,18 @@ fun squareSequenceDigit(n: Int): Int {
             m *= 10
             over--
         }
-        return (sqr(i) / m) % 10
+        return (x / m) % 10
     }
+}
+
+fun squareSequenceDigit(n: Int): Int {
+    var i = 0
+    var num = 0
+    while (num < n) {
+        i += 1
+        num += digitNumber(sqr(i))
+    }
+    return SequenceDigit(n, sqr(i), num)
 }
 
 /**
@@ -308,14 +311,5 @@ fun fibSequenceDigit(n: Int): Int {
         i += 1
         num += digitNumber(fib(i))
     }
-    if (num == n) return (fib(i) % 10)
-    else {
-        var over = num - n
-        var m = 10
-        while (over > 1) {
-            m *= 10
-            over--
-        }
-        return (fib(i) / m) % 10
-    }
+    return SequenceDigit(n, fib(i), num)
 }
