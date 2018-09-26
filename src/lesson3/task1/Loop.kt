@@ -4,6 +4,7 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import kotlin.concurrent.timerTask
+import kotlin.math.PI
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.sqrt
@@ -16,7 +17,7 @@ import kotlin.math.sqrt
 fun factorial(n: Int): Double {
     var result = 1.0
     for (i in 1..n) {
-        result = result * i // Please do not fix in master
+        result *= i // Please do not fix in master
     }
     return result
 }
@@ -126,8 +127,8 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var x = 2
-    val z = sqrt(n.toDouble())
-    for (i in 1..z.toInt())
+    if (isPrime(n)) return n
+    else
         while (n % x != 0) x++
     return x
 }
@@ -165,7 +166,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean =
-        (ceil(Math.sqrt(Math.min(m, n).toDouble())) <= floor(Math.sqrt(Math.max(m, n).toDouble())))
+        (ceil(Math.sqrt(m.toDouble())) <= floor(Math.sqrt(n.toDouble())))
 
 /**
  * Средняя
@@ -201,8 +202,20 @@ fun collatzSteps(x: Int): Int {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double = TODO()
-
+fun sin(x: Double, eps: Double): Double {
+    val x1 = x % (2 * PI)
+    var end = x1
+    var num = x1
+    var i = 1.0
+    while (true) {
+        num = -num * sqr(x1) / (i + 1) / (i + 2)
+        if (Math.abs(num) < eps)
+            break
+        end += num
+        i += 2
+    }
+    return end
+}
 
 /**
  * Средняя
@@ -211,7 +224,20 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * cos(x) = 1 - x^2 / 2! + x^4 / 4! - x^6 / 6! +
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    val x1 = x % (2 * PI)
+    var end = 1.0
+    var num = 1.0
+    var i = 0.0
+    while (true) {
+        num = -num * sqr(x1) / (i + 1) / (i + 2)
+        if (Math.abs(num) < eps)
+            break
+        end += num
+        i += 2
+    }
+    return end
+}
 
 /**
  * Средняя
@@ -270,18 +296,18 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun SequenceDigit(n: Int, x: Int, num: Int): Int {
-    return if (num == n) (x % 10)
-    else {
-        var over = num - n
-        var m = 10
-        while (over > 1) {
-            m *= 10
-            over--
+fun sequenceDigit(n: Int, x: Int, num: Int): Int =
+        if (num == n) (x % 10)
+        else {
+            var over = num - n
+            var m = 10
+            while (over > 1) {
+                m *= 10
+                over--
+            }
+            (x / m) % 10
         }
-        return (x / m) % 10
-    }
-}
+
 
 fun squareSequenceDigit(n: Int): Int {
     var i = 0
@@ -290,7 +316,7 @@ fun squareSequenceDigit(n: Int): Int {
         i += 1
         num += digitNumber(sqr(i))
     }
-    return SequenceDigit(n, sqr(i), num)
+    return sequenceDigit(n, sqr(i), num)
 }
 
 /**
@@ -309,5 +335,5 @@ fun fibSequenceDigit(n: Int): Int {
         i += 1
         num += digitNumber(fib(i))
     }
-    return SequenceDigit(n, fib(i), num)
+    return sequenceDigit(n, fib(i), num)
 }
