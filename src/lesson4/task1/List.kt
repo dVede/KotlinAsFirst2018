@@ -252,13 +252,13 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val start = convert(n, base)
-    val alphabet = "abcdefghijklmnopqrstuvwxyz"
+    val alph = "abcdefghijklmnopqrstuvwxyz"
     val x = StringBuilder()
     if (n == 0) x.append(n)
     else
         for (element in start) {
             if (element < 10) x.append(element.toString())
-            else x.append(alphabet[element - 10].toString())
+            else x.append(alph[element - 10].toString())
         }
     return x.toString()
 }
