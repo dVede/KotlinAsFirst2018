@@ -73,17 +73,12 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var num = n
-    var i = 0
-    when {
-        (n == 0) -> i = 1
-        else ->
-            while (num != 0) {
-                i += 1
-                num /= 10
-            }
-    }
-    return i
+    var x = 2
+    if (isPrime(n)) return n
+    else
+        for (i in 2..sqrt(n.toDouble()).toInt())
+            while (n % x != 0) x++
+    return x
 }
 
 /**
@@ -246,7 +241,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int {
+fun revert(n: Int): Int { //number.toString().reversed().toInt()
     var a = 0
     var n1 = n
     while (n1 > 0) {
