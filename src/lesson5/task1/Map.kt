@@ -246,8 +246,10 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> =
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-        word.all { it in chars }
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    val symbol = chars.map { it.toLowerCase() }
+    return word.toLowerCase().all { it in symbol }
+}
 
 /**
  * Средняя
@@ -302,12 +304,13 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     if (list.isEmpty()) return -1 to -1
     val mmm = list.mapIndexed { indexed, it -> it to indexed }.sortedBy { it.first }
     var i = 0
-    while (i != list.size - 1) {
-        val sum = mmm[i].first + mmm[list.size - 1].first
+    var j = list.size - 1
+    while (i != j) {
+        val sum = mmm[i].first + mmm[j].first
         when {
-            sum == number -> return mmm[i].second to mmm[list.size - 1].second
+            sum == number -> return mmm[i].second to mmm[j].second
             sum < number -> i++
-            else -> list.size - 2
+            else -> j--
         }
     }
     return -1 to -1

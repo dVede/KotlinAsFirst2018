@@ -73,12 +73,13 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var x = 2
-    if (isPrime(n)) return n
-    else
-        for (i in 2..sqrt(n.toDouble()).toInt())
-            while (n % x != 0) x++
-    return x
+    var num = kotlin.math.abs(n)
+    var count = 0
+    do {
+        count++
+        num /= 10
+    } while (num > 0)
+    return count
 }
 
 /**
