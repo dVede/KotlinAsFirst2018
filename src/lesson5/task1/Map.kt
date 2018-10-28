@@ -334,4 +334,4 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
 //я сделал, но как по мне очень убого,
-//посижу подумаю как сделать не убого
+//посижу подумаю как сделать не убого.
