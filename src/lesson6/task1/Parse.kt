@@ -160,7 +160,7 @@ fun bestLongJump(jumps: String): Int =
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (jumps.contains(Regex("""[^\d\s-%+]"""))) return -1
+    if ((jumps.contains(Regex("""[^\d\s-%+]"""))) || (jumps.isEmpty())) return -1
     val jump = jumps.split(" ")
     val high = mutableListOf<String>()
     (0 until jump.size step 2).forEach { i ->
@@ -225,7 +225,7 @@ fun mostExpensive(description: String): String {
     if (!Regex("""(?:\S+ \d+(?:\.\d+)?)(?:; \S+ \d+(?:\.\d+)?)*""").matches(description))
         return ""
     var name = ""
-    var price = 0.0
+    var price = -1.0
     description.split(Regex("; ")).map { it.split(Regex(" ")) }.forEach { it ->
         if (it[1].toDouble() > price) {
             price = it[1].toDouble()
@@ -306,7 +306,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             "+" -> end[position]++
             "-" -> end[position]--
             " " -> ""
-            "[" -> if (end[position] == 0) {
+            "[" -> if (end[position] != 0) {
                 var bc1 = 1
                 while (bc1 > 0) {
                     j++
