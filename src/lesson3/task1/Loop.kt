@@ -242,7 +242,7 @@ fun cos(x: Double, eps: Double): Double {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int { //number.toString().reversed().toInt()
+fun revert(n: Int): Int { //number.toString().reversed().toInt() :)
     var a = 0
     var n1 = n
     while (n1 > 0) {

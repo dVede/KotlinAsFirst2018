@@ -155,7 +155,7 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.0.
  */
 fun times(a: List<Double>, b: List<Double>): Double =
-a.foldIndexed(0.0) { i, num, _ -> num + a[i] * b[i] }
+        a.foldIndexed(0.0) { i, num, _ -> num + a[i] * b[i] }
 //a.zip(b, { n1, n2 -> n1 * n2 }).fold(1.0) { m1, m2 -> m1 + m2 }
 
 /**
