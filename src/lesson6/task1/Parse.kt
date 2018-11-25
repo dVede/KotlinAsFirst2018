@@ -306,7 +306,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             "+" -> end[position]++
             "-" -> end[position]--
             " " -> ""
-            "[" -> if (end[position] != 0) {
+            "[" -> if (end[position] == 0) {
                 var bc1 = 1
                 while (bc1 > 0) {
                     j++
