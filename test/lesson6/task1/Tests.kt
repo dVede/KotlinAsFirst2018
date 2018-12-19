@@ -143,4 +143,19 @@ class Tests {
         assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "+>+>[+>", 3) }
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
     }
+
+    @Test
+    @Tag("Hard")
+    fun main2() {
+        assertEquals("-1.0 + 17.0i", lesson6.task1.main2(Complex(2.0, 3.0), Complex(5.0, 2.0), Complex(7.0, -3.0)))
+    }
+
+    @Test
+    @Tag("Impossible")
+    fun complex() {
+        assertEquals("90.0 - 20.0i", complex("2 + 4i;5;-i;4 + i"))
+        assertEquals("288.0 - 216.0i", complex("2 - 4i;-9;-i;4 - 8i"))
+        assertEquals("144.0 - 648.0i", complex("2 - 9i;-9;-i;-8i"))
+    }
 }
+

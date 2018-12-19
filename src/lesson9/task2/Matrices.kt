@@ -1,8 +1,14 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson9.task2
 
+import lesson8.task2.square
+import lesson9.task1.Cell
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
+import org.omg.CORBA.INTERNAL
+import kotlin.math.abs
+import kotlin.math.min
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -59,7 +65,36 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    val result = createMatrix(height, width, 0)
+    var cellsCount = 0
+    var layersCount = 0
+    while (cellsCount < height * width) {
+        (layersCount until width - layersCount).forEach { i ->
+            result[layersCount, i] = cellsCount + 1
+            cellsCount++
+            if (cellsCount == height * width) return result
+        }
+        (layersCount + 1 until height - layersCount - 1).forEach { i ->
+            result[i, width - 1 - layersCount] = cellsCount + 1
+            cellsCount++
+            if (cellsCount == height * width) return result
+        }
+        (width - layersCount - 1 downTo layersCount).forEach { i ->
+            result[height - layersCount - 1, i] = cellsCount + 1
+            cellsCount++
+            if (cellsCount == height * width) return result
+        }
+        (height - layersCount - 2 downTo layersCount + 1).forEach { i ->
+            result[i, layersCount] = cellsCount + 1
+            cellsCount++
+            if (cellsCount == height * width) return result
+        }
+        layersCount++
+    }
+    return result
+}
+
 
 /**
  * Сложная
@@ -75,7 +110,16 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val result = createMatrix(height, width, 0)
+    (0 until height).forEach { i ->
+        (0 until width).forEach { j ->
+            result[i, j] = min(min(i + 1, height - i), min(j + 1, width - j)
+            )
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -90,7 +134,24 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+    val result = createMatrix(height, width, 0)
+    var value = 1
+    var row = 0
+    var column = 0
+    while (row < height) {
+        var i = row
+        var j = column
+        while ((i < height) && (j >= 0))
+            result[i++, j--] = value++
+        when {
+            column < width - 1 -> column++
+            else -> row++
+        }
+    }
+
+    return result
+}
 
 /**
  * Средняя
@@ -103,7 +164,18 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    if (matrix.height != matrix.width) throw IllegalArgumentException()
+    val rotate = createMatrix(matrix.height, matrix.width, matrix[0, 0])
+    (0 until matrix.height).forEach { row ->
+        (0 until matrix.width).forEach { column ->
+            rotate[column, matrix.width - row - 1] = matrix[row, column]
+        }
+    }
+
+    return rotate
+}
+
 
 /**
  * Сложная
@@ -118,7 +190,34 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    if (matrix.width != matrix.height)
+        return false
+    val matrixSet = mutableSetOf<Int>()
+    (0 until matrix.height).forEach { row ->
+        matrixSet.clear()
+        (0 until matrix.width)
+                .forEach { column ->
+                    matrixSet.add(matrix[row, column])
+                }
+        (1..matrix.width).forEach { number ->
+            if (number !in matrixSet)
+                return false
+        }
+    }
+    (0 until matrix.width).forEach { column ->
+        matrixSet.clear()
+        (0 until matrix.height).forEach { row ->
+            matrixSet.add(matrix[row, column])
+        }
+        (1..matrix.width).forEach { number ->
+            if (number !in matrixSet)
+                return false
+        }
+    }
+    return true
+}
+
 
 /**
  * Средняя
@@ -137,7 +236,40 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+    //let's check and sum all 8 numbers :) (hmmm, again?)
+    fun findSumNeighbours(row: Int, column: Int): Int {
+        var result = 0
+        result += if (row - 1 < 0) 0
+        else matrix[row - 1, column]
+        result += if (column - 1 < 0) 0
+        else matrix[row, column - 1]
+        result += if (row + 1 == matrix.height) 0
+        else matrix[row + 1, column]
+        result += if (column + 1 == matrix.width) 0
+        else matrix[row, column + 1]
+        result += if ((column - 1 < 0) || (row - 1 < 0)) 0
+        else matrix[row - 1, column - 1]
+        result += if ((column + 1 == matrix.width) || (row - 1 < 0)) 0
+        else matrix[row - 1, column + 1]
+        result += if ((column - 1 < 0) || (row + 1 == matrix.height)) 0
+        else matrix[row + 1, column - 1]
+        result += if ((column + 1 == matrix.width) || (row + 1 == matrix.height)) 0
+        else matrix[row + 1, column + 1]
+        return result
+
+    }
+
+    val result = createMatrix(matrix.height, matrix.width, matrix[0, 0])
+    (0 until matrix.height).forEach { row ->
+        (0 until matrix.width).forEach { column ->
+            result[row, column] = findSumNeighbours(row, column)
+        }
+    }
+    return result
+
+}
+
 
 /**
  * Средняя
@@ -154,7 +286,28 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+    val columns = mutableListOf<Int>()
+    val rows = mutableListOf<Int>()
+    val matrixSet = mutableSetOf<Int>()
+    (0 until matrix.height).forEach { row ->
+        matrixSet.clear()
+        (0 until matrix.width).forEach { column ->
+            matrixSet.add(matrix[row, column])
+        }
+        if (1 !in matrixSet)
+            rows.add(row)
+    }
+    (0 until matrix.width).forEach { column ->
+        matrixSet.clear()
+        (0 until matrix.height).forEach { row ->
+            matrixSet.add(matrix[row, column])
+        }
+        if (1 !in matrixSet)
+            columns.add(column)
+    }
+    return Holes(rows, columns)
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице
@@ -175,7 +328,26 @@ data class Holes(val rows: List<Int>, val columns: List<Int>)
  *
  * К примеру, центральный элемент 12 = 1 + 2 + 4 + 5, элемент в левом нижнем углу 12 = 1 + 4 + 7 и так далее.
  */
-fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
+    fun squareSum(currentColumn: Int, currentRow: Int): Int {
+        var result = 0
+        (0..currentColumn).forEach { i ->
+            (0..currentRow).forEach { j ->
+                result += matrix[i, j]
+            }
+        }
+        return result
+    }
+
+    val result = createMatrix(matrix.height, matrix.width, matrix[0, 0])
+    (0 until matrix.height).forEach { i ->
+        (0 until matrix.width).forEach { j ->
+            result[i, j] = squareSum(i, j)
+        }
+    }
+    return result
+
+}
 
 /**
  * Сложная
@@ -205,7 +377,14 @@ fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> 
  * Инвертировать заданную матрицу.
  * При инвертировании знак каждого элемента матрицы следует заменить на обратный
  */
-operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.unaryMinus(): Matrix<Int> {
+    (0 until height).forEach { row ->
+        (0 until width).forEach { column ->
+            this[row, column] = -this[row, column]
+        }
+    }
+    return this
+}
 
 /**
  * Средняя
@@ -215,7 +394,19 @@ operator fun Matrix<Int>.unaryMinus(): Matrix<Int> = TODO(this.toString())
  * В противном случае бросить IllegalArgumentException.
  * Подробно про порядок умножения см. статью Википедии "Умножение матриц".
  */
-operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toString())
+operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
+    if (width != other.height)
+        throw IllegalArgumentException()
+    val result = createMatrix(height, other.width, 0)
+    (0 until height).forEach { row ->
+        (0 until other.width).forEach { column ->
+            (0 until width).forEach { item ->
+                result[row, column] += this[row, item] * other[item, column]
+            }
+        }
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -244,7 +435,28 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> = TODO(this.toSt
  * 0  4 13  6
  * 3 10 11  8
  */
-fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO()
+fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
+    val result = mutableMapOf<Int, Cell>()
+    (0 until matrix.height).forEach { row ->
+        (0 until matrix.width).forEach { column ->
+            result[matrix[row, column]] = Cell(row, column)
+        }
+    }
+    for (move in moves) {
+        if (move !in result)
+            throw IllegalStateException()
+        val thisCell = result[move]!!
+        val nullCell = result[0]!!
+        if (abs(thisCell.column - nullCell.column) > 1 ||
+                abs(thisCell.row - nullCell.row) > 1)
+            throw IllegalStateException()
+        matrix[thisCell] = 0
+        matrix[nullCell] = move
+        result[move] = nullCell
+        result[0] = thisCell
+    }
+    return matrix
+}
 
 /**
  * Очень сложная

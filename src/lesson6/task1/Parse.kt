@@ -3,9 +3,6 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import java.beans.Expression
-import javax.print.attribute.IntegerSyntax
-import kotlin.math.max
 
 /**
  * Пример
@@ -130,8 +127,9 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-        if (phone.contains(Regex("""[^\s\d-+()]|\d(?=.*\+)"""))) ""
-        else Regex("""[\s-()]""").replace(phone, "")
+        if (phone.filter { it != ' ' && it != '-' }.matches(Regex("""((\+\d*)?)((\(\d+\))?)(\d*)""")))
+            Regex("""-| |\)|\(""").replace(phone, "")
+        else ""
 
 
 /**
@@ -235,6 +233,7 @@ fun mostExpensive(description: String): String {
     return name
 }
 
+
 /**
  * Сложная
  *
@@ -336,3 +335,67 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
 
     return end
 }
+
+/**
+ *ОЧЕНЬ СЛОЖНОЕ ТЕСТИРОВАНИЕ
+ *
+ *
+ */
+
+fun main2(a: Complex, b: Complex, c: Complex): String {
+    val multiply: Complex = a * b * c
+    println("x * y =  ${a * b * c}")
+    return multiply.toString()
+
+}
+
+
+fun complex(str: String): String {
+    val a = mutableListOf<Pair<Double, Double>>()
+    val input = str.split(";")
+    (0 until input.size)
+            .forEach { i ->
+                if (!Regex("""([-]?\d+ [+-] \d*i)||([-]?\d+)||([-]?\d*i)""").matches(input[i]))
+                    throw Exception()
+            }
+    (0 until input.size).forEach { i ->
+        if (input[i].split(" ").size == 1) {
+            a += if ("i" in input[i]) {
+                when {
+                    input[i] == "i" -> 0.0 to 1.0
+                    input[i] == "-i" -> 0.0 to -1.0
+                    else -> 0.0 to input[i].filter { it != 'i' }.toDouble()
+                }
+            } else
+                input[i].toDouble() to 0.0
+        } else {
+            val sp = input[i].split(" ")
+            a += sp[0].toDouble() to when {
+                sp[1] + sp[2] == "+i" -> 1.0
+                sp[1] + sp[2] == "-i" -> -1.0
+                else -> (sp[1] + sp[2].filter { it != 'i' }).toDouble()
+            }
+        }
+    }
+    return complexTime(a).toString()
+}
+
+fun complexTime(str: List<Pair<Double, Double>>): Complex {
+    var times = Complex(str[0].first, str[0].second)
+    for (i in 1 until str.size) {
+        times *= Complex(str[i].first, str[i].second)
+    }
+    return times
+}
+
+class Complex(private val real: Double, private val imag: Double) {
+    operator fun times(other: Complex) = Complex(
+            real * other.real - imag * other.imag,
+            real * other.imag + imag * other.real
+    )
+
+    override fun toString() =
+            if (imag >= 0.0) "$real + ${imag}i"
+            else "$real - ${-imag}i"
+}
+
