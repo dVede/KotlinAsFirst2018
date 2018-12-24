@@ -260,11 +260,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int =
-        when {
-            !start.inside() || !end.inside() -> throw IllegalArgumentException()
-            else -> knightTrajectory(start, end).size - 1
-        }
+fun knightMoveNumber(start: Square, end: Square): Int = TODO()
 
 
 /**
@@ -287,47 +283,7 @@ fun knightMoveNumber(start: Square, end: Square): Int =
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> {
-    //check all 8 knight position :)
-    fun check(position: Square): Set<Square> {
-        val step1 = 2
-        val step2 = 1
-        val column = position.column
-        val row = position.row
-        val ram = mutableSetOf<Square>()
-        if (Square(column - step1, row - step2).inside()) ram.add(Square(column - step1, row - step2))
-        if (Square(column + step1, row - step2).inside()) ram.add(Square(column + step1, row - step2))
-        if (Square(column - step1, row + step2).inside()) ram.add(Square(column - step1, row + step2))
-        if (Square(column + step1, row + step2).inside()) ram.add(Square(column + step1, row + step2))
-        if (Square(column - step2, row - step1).inside()) ram.add(Square(column - step2, row - step1))
-        if (Square(column + step2, row - step1).inside()) ram.add(Square(column + step2, row - step1))
-        if (Square(column - step2, row + step1).inside()) ram.add(Square(column - step2, row + step1))
-        if (Square(column + step2, row + step1).inside()) ram.add(Square(column + step2, row + step1))
-        return ram
-    }
-    if ((!start.inside()) || (!end.inside())) throw IllegalArgumentException()
-    if (start == end) return listOf(start)
-    val result = mutableListOf(mutableListOf(start))
-    val positionCheck = Array(8) { Array(8) { false } }
-    var index = 0
-    var cells = 0
-    while (true) {
-        (index until result.size).forEach { i ->
-            val last = result[i].last()
-            for (it in check(last)) {
-                if (!positionCheck[it.column - 1][it.row - 1]) {
-                    cells++
-                    result.add(result[i].toList().toMutableList())
-                    result[i + cells].add(it)
-                    positionCheck[it.column - 1][it.row - 1] = true
-                    if (it == end) return result[i + cells]
-                }
-            }
-            index++
-            cells--
-        }
-    }
+fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
 
-}
 
 

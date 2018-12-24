@@ -4,6 +4,7 @@ package lesson5.task1
 
 import java.util.*
 
+
 /**
  * Пример
  *
@@ -335,6 +336,29 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
-//я сделал, но как по мне очень убого,
-//посижу подумаю как сделать не убого.
+data class Item(val name: String, val mas: Int, val cost: Int)
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    var res = setOf<String>()
+    var treasure = mutableListOf<Item>()
+    for (i in 0 until treasures.size) {
+        treasure.add(i, Item(treasures.keys.toList()[i], treasures.values.toList()[i].first, treasures.values.toList()[i].second))
+    }
+    fun choseItem(i: Int, w: Int): Triple<MutableList<Item>, Int, Int> {
+        val chosen = mutableListOf<Item>()
+        if (i < 0 || w == 0) return Triple(chosen, 0, 0)
+        else if (treasure[i].mas > w) return choseItem(i - 1, w)
+        val (name, mas, cost) = choseItem(i - 1, w)
+        var (name_, mas_, cost_) = choseItem(i - 1, w - treasure[i].mas)
+        cost_ += treasure[i].cost
+        if (cost_ > cost) {
+            name_.add(treasure[i])
+            return Triple(name_, mas_ + treasure[i].mas, cost_)
+        }
+        return Triple(name_, mas_, cost_)
+    }
+    val (chosenItems, totalWeight, totalValue) = choseItem(treasure.size - 1, capacity)
+    for ((name) in chosenItems)
+        res += name
+    return res
+}

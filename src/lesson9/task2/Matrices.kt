@@ -69,26 +69,27 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     val result = createMatrix(height, width, 0)
     var cellsCount = 0
     var layersCount = 0
-    while (cellsCount < height * width) {
+    val cellsNumber = height * width
+    while (cellsCount < cellsNumber) {
+        if (cellsCount == cellsNumber) return result
         (layersCount until width - layersCount).forEach { i ->
             result[layersCount, i] = cellsCount + 1
             cellsCount++
-            if (cellsCount == height * width) return result
         }
+        if (cellsCount == cellsNumber) return result
         (layersCount + 1 until height - layersCount - 1).forEach { i ->
             result[i, width - 1 - layersCount] = cellsCount + 1
             cellsCount++
-            if (cellsCount == height * width) return result
         }
+        if (cellsCount == cellsNumber) return result
         (width - layersCount - 1 downTo layersCount).forEach { i ->
             result[height - layersCount - 1, i] = cellsCount + 1
             cellsCount++
-            if (cellsCount == height * width) return result
         }
+        if (cellsCount == cellsNumber) return result
         (height - layersCount - 2 downTo layersCount + 1).forEach { i ->
             result[i, layersCount] = cellsCount + 1
             cellsCount++
-            if (cellsCount == height * width) return result
         }
         layersCount++
     }
@@ -114,8 +115,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
     val result = createMatrix(height, width, 0)
     (0 until height).forEach { i ->
         (0 until width).forEach { j ->
-            result[i, j] = min(min(i + 1, height - i), min(j + 1, width - j)
-            )
+            result[i, j] = min(min(i + 1, height - i), min(j + 1, width - j))
         }
     }
     return result
@@ -149,7 +149,6 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
             else -> row++
         }
     }
-
     return result
 }
 
@@ -172,7 +171,6 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
             rotate[column, matrix.width - row - 1] = matrix[row, column]
         }
     }
-
     return rotate
 }
 
@@ -193,29 +191,30 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
 fun isLatinSquare(matrix: Matrix<Int>): Boolean {
     if (matrix.width != matrix.height)
         return false
+    var check = true
     val matrixSet = mutableSetOf<Int>()
     (0 until matrix.height).forEach { row ->
-        matrixSet.clear()
         (0 until matrix.width)
                 .forEach { column ->
                     matrixSet.add(matrix[row, column])
                 }
         (1..matrix.width).forEach { number ->
             if (number !in matrixSet)
-                return false
+                check = false
         }
+        matrixSet.clear()
     }
     (0 until matrix.width).forEach { column ->
-        matrixSet.clear()
         (0 until matrix.height).forEach { row ->
             matrixSet.add(matrix[row, column])
         }
         (1..matrix.width).forEach { number ->
             if (number !in matrixSet)
-                return false
+                check = false
         }
+        matrixSet.clear()
     }
-    return true
+    return check
 }
 
 
@@ -237,7 +236,6 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
  * 42 ===> 0
  */
 fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
-    //let's check and sum all 8 numbers :) (hmmm, again?)
     fun findSumNeighbours(row: Int, column: Int): Int {
         var result = 0
         result += if (row - 1 < 0) 0
@@ -257,7 +255,6 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
         result += if ((column + 1 == matrix.width) || (row + 1 == matrix.height)) 0
         else matrix[row + 1, column + 1]
         return result
-
     }
 
     val result = createMatrix(matrix.height, matrix.width, matrix[0, 0])
@@ -267,7 +264,6 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
         }
     }
     return result
-
 }
 
 
@@ -291,20 +287,20 @@ fun findHoles(matrix: Matrix<Int>): Holes {
     val rows = mutableListOf<Int>()
     val matrixSet = mutableSetOf<Int>()
     (0 until matrix.height).forEach { row ->
-        matrixSet.clear()
         (0 until matrix.width).forEach { column ->
             matrixSet.add(matrix[row, column])
         }
         if (1 !in matrixSet)
             rows.add(row)
+        matrixSet.clear()
     }
     (0 until matrix.width).forEach { column ->
-        matrixSet.clear()
         (0 until matrix.height).forEach { row ->
             matrixSet.add(matrix[row, column])
         }
         if (1 !in matrixSet)
             columns.add(column)
+        matrixSet.clear()
     }
     return Holes(rows, columns)
 }
@@ -346,7 +342,6 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
         }
     }
     return result
-
 }
 
 /**
@@ -400,8 +395,8 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
     val result = createMatrix(height, other.width, 0)
     (0 until height).forEach { row ->
         (0 until other.width).forEach { column ->
-            (0 until width).forEach { item ->
-                result[row, column] += this[row, item] * other[item, column]
+            (0 until width).forEach { num ->
+                result[row, column] += this[row, num] * other[num, column]
             }
         }
     }
@@ -435,28 +430,7 @@ operator fun Matrix<Int>.times(other: Matrix<Int>): Matrix<Int> {
  * 0  4 13  6
  * 3 10 11  8
  */
-fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
-    val result = mutableMapOf<Int, Cell>()
-    (0 until matrix.height).forEach { row ->
-        (0 until matrix.width).forEach { column ->
-            result[matrix[row, column]] = Cell(row, column)
-        }
-    }
-    for (move in moves) {
-        if (move !in result)
-            throw IllegalStateException()
-        val thisCell = result[move]!!
-        val nullCell = result[0]!!
-        if (abs(thisCell.column - nullCell.column) > 1 ||
-                abs(thisCell.row - nullCell.row) > 1)
-            throw IllegalStateException()
-        matrix[thisCell] = 0
-        matrix[nullCell] = move
-        result[move] = nullCell
-        result[0] = thisCell
-    }
-    return matrix
-}
+fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> = TODO()
 
 /**
  * Очень сложная

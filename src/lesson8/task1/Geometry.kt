@@ -187,14 +187,11 @@ fun lineByPoints(a: Point, b: Point): Line {
     return Line(a, angleTransform(angle))
 }
 
-fun angleTransform(angle: Double): Double {
-    return when {
-        angle < 0 && angle > -PI.ulp -> 0.0
-        angle >= PI -> angle - PI
-        angle >= 0 -> angle
-        else -> angle + PI
-    }
-}
+fun angleTransform(angle: Double): Double =
+        if ((angle % PI + if (angle < 0) PI else 0.0) != PI)
+            angle % PI + if (angle < 0) PI else 0.0
+        else
+            0.0
 
 /**
  * Сложная
@@ -216,10 +213,10 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  */
 fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     if (circles.size < 2) throw IllegalArgumentException()
-    var result = circles[0] to circles[1]
+    var result = Pair(circles[0], circles[1])
     (0 until circles.size - 1).forEach { i ->
         (i + 1 until circles.size).forEach { j ->
-            val length = circles[i] to circles[j]
+            val length = Pair(circles[i], circles[j])
             if (result.first.distance(result.second) > (length.first.distance(length.second)))
                 result = length
         }

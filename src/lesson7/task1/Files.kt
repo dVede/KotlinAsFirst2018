@@ -81,9 +81,7 @@ fun sibilants(inputName: String, outputName: String) {
     val correctSymbols = listOf('и', 'И', 'а', 'А', 'у', 'У')
     symbols.forEach { symbol ->
         (0 until uncorrectSymbols.size).forEach { i ->
-            val uncorrect = (symbol.toString() + uncorrectSymbols[i]).toRegex()
-            val correct = symbol.toString() + correctSymbols[i]
-            input = input.replace(uncorrect, correct)
+            input = input.replace((symbol.toString() + uncorrectSymbols[i]).toRegex(), symbol.toString() + correctSymbols[i])
         }
     }
     File(outputName).writeText(input)
