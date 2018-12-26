@@ -287,7 +287,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var end = 0
     var base1 = 1
     str.reversed().forEach {
-        val num = if (it <= '9') it.toInt()
+        val num = if (it <= '9') it - '0'
         else (it.toLowerCase() - 'a' + 10)
         end += base1 * num
         base1 *= base

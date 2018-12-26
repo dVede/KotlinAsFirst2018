@@ -49,6 +49,15 @@ class Tests {
                         listOf(10, 11, 12, 5),
                         listOf(9, 8, 7, 6)
                 )), generateSpiral(3, 4))
+        assertEquals(createMatrix(6, 6,
+                listOf(
+                        listOf(1, 2, 3, 4, 5, 6),
+                        listOf(20, 21, 22, 23, 24, 7),
+                        listOf(19, 32, 33, 34, 25, 8),
+                        listOf(18, 31, 36, 35, 26, 9),
+                        listOf(17, 30, 29, 28, 27, 10),
+                        listOf(16, 15, 14, 13, 12, 11)
+                )), generateSpiral(6, 6))
     }
 
     @Test

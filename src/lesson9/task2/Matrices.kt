@@ -68,33 +68,34 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
 fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     val result = createMatrix(height, width, 0)
     var cellsCount = 0
-    var layersCount = 0
+    var fullSquareCount = 0
     val cellsNumber = height * width
     while (cellsCount < cellsNumber) {
         if (cellsCount == cellsNumber) return result
-        (layersCount until width - layersCount).forEach { i ->
-            result[layersCount, i] = cellsCount + 1
+        (fullSquareCount until width - fullSquareCount).forEach { i ->
+            result[fullSquareCount, i] = cellsCount + 1
             cellsCount++
         }
         if (cellsCount == cellsNumber) return result
-        (layersCount + 1 until height - layersCount - 1).forEach { i ->
-            result[i, width - 1 - layersCount] = cellsCount + 1
+        (fullSquareCount + 1 until height - fullSquareCount - 1).forEach { i ->
+            result[i, width - 1 - fullSquareCount] = cellsCount + 1
             cellsCount++
         }
         if (cellsCount == cellsNumber) return result
-        (width - layersCount - 1 downTo layersCount).forEach { i ->
-            result[height - layersCount - 1, i] = cellsCount + 1
+        (width - fullSquareCount - 1 downTo fullSquareCount).forEach { i ->
+            result[height - fullSquareCount - 1, i] = cellsCount + 1
             cellsCount++
         }
         if (cellsCount == cellsNumber) return result
-        (height - layersCount - 2 downTo layersCount + 1).forEach { i ->
-            result[i, layersCount] = cellsCount + 1
+        (height - fullSquareCount - 2 downTo fullSquareCount + 1).forEach { i ->
+            result[i, fullSquareCount] = cellsCount + 1
             cellsCount++
         }
-        layersCount++
+        fullSquareCount++
     }
     return result
 }
+
 
 
 /**
@@ -134,24 +135,7 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> {
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> {
-    val result = createMatrix(height, width, 0)
-    var value = 1
-    var row = 0
-    var column = 0
-    while (row < height) {
-        var i = row
-        var j = column
-        while ((i < height) && (j >= 0))
-            result[i++, j--] = value++
-        when {
-            column < width - 1 -> column++
-            else -> row++
-        }
-    }
-    return result
-}
-
+fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
 /**
  * Средняя
  *
@@ -166,8 +150,8 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> {
 fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
     if (matrix.height != matrix.width) throw IllegalArgumentException()
     val rotate = createMatrix(matrix.height, matrix.width, matrix[0, 0])
-    (0 until matrix.height).forEach { row ->
-        (0 until matrix.width).forEach { column ->
+    for (row in 0 until matrix.height) {
+        for (column in 0 until matrix.width) {
             rotate[column, matrix.width - row - 1] = matrix[row, column]
         }
     }
@@ -285,22 +269,22 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
 fun findHoles(matrix: Matrix<Int>): Holes {
     val columns = mutableListOf<Int>()
     val rows = mutableListOf<Int>()
-    val matrixSet = mutableSetOf<Int>()
+    var a = 0
     (0 until matrix.height).forEach { row ->
         (0 until matrix.width).forEach { column ->
-            matrixSet.add(matrix[row, column])
+            a += matrix[row, column]
         }
-        if (1 !in matrixSet)
+        if (a == 0)
             rows.add(row)
-        matrixSet.clear()
+        a = 0
     }
     (0 until matrix.width).forEach { column ->
         (0 until matrix.height).forEach { row ->
-            matrixSet.add(matrix[row, column])
+            a += matrix[row, column]
         }
-        if (1 !in matrixSet)
+        if (a == 0)
             columns.add(column)
-        matrixSet.clear()
+        a = 0
     }
     return Holes(rows, columns)
 }
@@ -364,7 +348,22 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
  * Вернуть тройку (Triple) -- (да/нет, требуемый сдвиг по высоте, требуемый сдвиг по ширине).
  * Если наложение невозможно, то первый элемент тройки "нет" и сдвиги могут быть любыми.
  */
-fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> = TODO()
+fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> {
+    for (width in 0..lock.width - key.width)
+        for (heigh in 0..lock.height - key.height)
+            if (canOpen(width, heigh, key, lock)) return Triple(true, width, heigh)
+    return Triple(false, 11, 11)
+}
+
+fun canOpen(width: Int, heigh: Int, key: Matrix<Int>, lock: Matrix<Int>): Boolean {
+    (0 until key.width).forEach { i ->
+        (0 until key.height).forEach { j ->
+            if (key[i, j] == lock[width + i, heigh + j])
+                return false
+        }
+    }
+    return true
+}
 
 /**
  * Простая

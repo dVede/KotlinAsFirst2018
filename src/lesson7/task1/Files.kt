@@ -141,9 +141,7 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
-fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
-}
+fun alignFileByWidth(inputName: String, outputName: String) = { TODO() }
 
 /**
  * Средняя
@@ -163,6 +161,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
+
 fun top20Words(inputName: String): Map<String, Int> = TODO()
 
 /**
@@ -221,14 +220,29 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Некрасивый
  * Остроумный
  * БелогЛазый
- * ФиолетОвый
 
  * Соответствующий выходной файл:
  * Карминовый, Некрасивый
  *
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
-fun chooseLongestChaoticWord(inputName: String, outputName: String) = { TODO() }
+fun chooseLongestChaoticWord(inputName: String, outputName: String) {
+    val result = mutableListOf<String>()
+    val input = File(inputName).readLines().map { it.trim() }
+    var maxL = 0
+    for (i in 0 until input.size) {
+        if (input[i].length == input[i].toLowerCase().toSet().size) {
+            if (input[i].length <= maxL) {
+                if (input[i].length == maxL) result.add(input[i])
+            } else {
+                result.clear()
+                result.add(input[i])
+                maxL = input[i].length
+            }
+        }
+    }
+    return File(outputName).writeText(result.joinToString(", "))
+}
 
 
 /**

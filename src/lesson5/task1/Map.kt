@@ -212,7 +212,6 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     return end
 }
 
-
 /**
  * Простая
  *
@@ -336,29 +335,31 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-data class Item(val name: String, val mas: Int, val cost: Int)
+data class Treasure(val name: String, val mas: Int, val cost: Int)
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var res = setOf<String>()
-    var treasure = mutableListOf<Item>()
-    for (i in 0 until treasures.size) {
-        treasure.add(i, Item(treasures.keys.toList()[i], treasures.values.toList()[i].first, treasures.values.toList()[i].second))
+    var treasure = mutableListOf<Treasure>()
+    (0 until treasures.size).forEach { i ->
+        treasure.add(i, Treasure(treasures.keys.toList()[i], treasures.values.toList()[i].first, treasures.values.toList()[i].second))
     }
-    fun choseItem(i: Int, w: Int): Triple<MutableList<Item>, Int, Int> {
-        val chosen = mutableListOf<Item>()
-        if (i < 0 || w == 0) return Triple(chosen, 0, 0)
-        else if (treasure[i].mas > w) return choseItem(i - 1, w)
-        val (name, mas, cost) = choseItem(i - 1, w)
-        var (name_, mas_, cost_) = choseItem(i - 1, w - treasure[i].mas)
+    fun choseItem(i: Int, maxWeight: Int): Triple<MutableList<Treasure>, Int, Int> {
+        val chosen = mutableListOf<Treasure>()
+        if (i < 0 || maxWeight == 0) return Triple(chosen, 0, 0)
+        else if (treasure[i].mas > maxWeight) return choseItem(i - 1, maxWeight)
+        val (name, mas, cost) = choseItem(i - 1, maxWeight)
+        var (name_, mas_, cost_) = choseItem(i - 1, maxWeight - treasure[i].mas)
         cost_ += treasure[i].cost
         if (cost_ > cost) {
             name_.add(treasure[i])
             return Triple(name_, mas_ + treasure[i].mas, cost_)
         }
-        return Triple(name_, mas_, cost_)
+        return Triple(name, mas, cost)
     }
-    val (chosenItems, totalWeight, totalValue) = choseItem(treasure.size - 1, capacity)
-    for ((name) in chosenItems)
+
+    val chosenItems = choseItem(treasure.size - 1, capacity).first
+    chosenItems.forEach { (name) ->
         res += name
+    }
     return res
 }
