@@ -56,7 +56,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val text = File(inputName).readText().toLowerCase()
     return substrings.groupBy { it }.mapValues {
-        """(?=${it.key})""".toLowerCase().toRegex().findAll(text).toList().size
+        it.key.toLowerCase().toRegex().findAll(text).toList().size
     }
 }
 
@@ -81,7 +81,7 @@ fun sibilants(inputName: String, outputName: String) {
     val correctSymbols = listOf('и', 'И', 'а', 'А', 'у', 'У')
     symbols.forEach { symbol ->
         (0 until uncorrectSymbols.size).forEach { i ->
-            input = input.replace((symbol.toString() + uncorrectSymbols[i]).toRegex(), symbol.toString() + correctSymbols[i])
+            input = input.replace((symbol.toString() + uncorrectSymbols[i]), symbol.toString() + correctSymbols[i])
         }
     }
     File(outputName).writeText(input)
