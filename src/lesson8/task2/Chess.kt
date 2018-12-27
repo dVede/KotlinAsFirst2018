@@ -38,7 +38,7 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square =
-        if (Regex("""^[a-h]^[1-8]""").matches(notation)) throw IllegalArgumentException()
+        if (!Regex("""[a-h][1-8]""").matches(notation)) throw IllegalArgumentException()
         else Square(notation[0] - 'a' + 1, notation[1] - '0')
 
 /**
@@ -145,31 +145,24 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun bishopTrajectory(start: Square, end: Square): List<Square> {
-    fun threeTrajectoryHops(): Square {
-        var column = start.column
-        var row = start.row
-        while (abs(end.column - column) != abs(end.row - row)) {
-            column++
-            if (end.row > start.row) row++ else row--
+fun bishopTrajectory(start: Square, end: Square): List<Square> =
+        when (bishopMoveNumber(start, end)) {
+            -1 -> listOf()
+            0 -> listOf(start)
+            1 -> listOf(start, end)
+            else -> listOf(start, threeTrajectoryHops(start, end), end)
         }
-        if (Square(column, row).inside()) return Square(column, row)
-        return Square(2 * start.column - column, row)
-    }
-    if ((start.column + start.row) % 2 != (end.row + end.column) % 2)
-        return emptyList()
-    var answer = listOf<Square>()
-    answer += when {
-        start.column == end.column && start.row == end.row -> listOf(start)
-        abs(start.column - end.column) == abs(start.row - end.row) -> listOf(start, end)
-        (start.column + start.row) % 2 == (end.column + end.row) % 2 -> listOf(start,
-                threeTrajectoryHops(), end)
-        else -> listOf()
-    }
 
-    return answer
+fun threeTrajectoryHops(start: Square, end: Square): Square {
+    var column = start.column
+    var row = start.row
+    while (abs(end.column - column) != abs(end.row - row)) {
+        column++
+        if (end.row > start.row) row++ else row--
+    }
+    if (Square(column, row).inside()) return Square(column, row)
+    return Square(2 * start.column - column, row)
 }
-
 
 /**
  * Средняя
