@@ -75,11 +75,13 @@ fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
     val months = mapOf("января" to 1, "февраля" to 2, "марта" to 3, "апреля" to 4, "мая" to 5, "июня" to 6,
             "июля" to 7, "августа" to 8, "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12)
+
+    if (parts.size != 3) return ""
     val year = parts[2].toIntOrNull()
     val month = months[parts[1]]
     val day = parts[0].toIntOrNull()
     if (day == null || year == null || month == null) return ""
-    if ((day !in 1..daysInMonth(month, year)) || (month !in 1..12) || (parts.size != 3)) return ""
+    if ((day !in 1..daysInMonth(month, year)) || (month !in 1..12)) return ""
     return String.format("%02d.%02d.%d", day, month, year)
 }
 
@@ -98,12 +100,13 @@ fun dateDigitToStr(digital: String): String {
     val parts = digital.split(".")
     val months = listOf("января", "февраля", "марта", "апреля", "мая", "июня",
             "июля", "августа", "сентября", "октября", "ноября", "декабря")
+    if (parts.size != 3) return ""
     val year = parts[2].toIntOrNull()
     val monthInt = parts[1].toIntOrNull()
     val day = parts[0].toIntOrNull()
     var monthStr: String
     if (year == null || monthInt == null || day == null) return ""
-    if ((day !in 1..daysInMonth(monthInt, year)) || (monthInt !in 1..12) || (parts.size != 3)) return ""
+    if ((day !in 1..daysInMonth(monthInt, year)) || (monthInt !in 1..12)) return ""
     monthStr = months[monthInt - 1]
     return String.format("%d %s %d", day, monthStr, year)
 }
@@ -328,68 +331,5 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     }
 
     return end
-}
-
-/**
- *ОЧЕНЬ СЛОЖНОЕ ТЕСТИРОВАНИЕ
- *
- *
- */
-
-fun main2(a: Complex, b: Complex, c: Complex): String {
-    val multiply: Complex = a * b * c
-    println("x * y =  ${a * b * c}")
-    return multiply.toString()
-
-}
-
-
-fun complex(str: String): String {
-    val a = mutableListOf<Pair<Double, Double>>()
-    val input = str.split(";")
-    (0 until input.size)
-            .forEach { i ->
-                if (!Regex("""([-]?\d+ [+-] \d*i)||([-]?\d+)||([-]?\d*i)""").matches(input[i]))
-                    throw Exception()
-            }
-    (0 until input.size).forEach { i ->
-        if (input[i].split(" ").size == 1) {
-            a += if ("i" in input[i]) {
-                when {
-                    input[i] == "i" -> 0.0 to 1.0
-                    input[i] == "-i" -> 0.0 to -1.0
-                    else -> 0.0 to input[i].filter { it != 'i' }.toDouble()
-                }
-            } else
-                input[i].toDouble() to 0.0
-        } else {
-            val sp = input[i].split(" ")
-            a += sp[0].toDouble() to when {
-                sp[1] + sp[2] == "+i" -> 1.0
-                sp[1] + sp[2] == "-i" -> -1.0
-                else -> (sp[1] + sp[2].filter { it != 'i' }).toDouble()
-            }
-        }
-    }
-    return complexTime(a).toString()
-}
-
-fun complexTime(str: List<Pair<Double, Double>>): Complex {
-    var times = Complex(str[0].first, str[0].second)
-    for (i in 1 until str.size) {
-        times *= Complex(str[i].first, str[i].second)
-    }
-    return times
-}
-
-class Complex(private val real: Double, private val imag: Double) {
-    operator fun times(other: Complex) = Complex(
-            real * other.real - imag * other.imag,
-            real * other.imag + imag * other.real
-    )
-
-    override fun toString() =
-            if (imag >= 0.0) "$real + ${imag}i"
-            else "$real - ${-imag}i"
 }
 

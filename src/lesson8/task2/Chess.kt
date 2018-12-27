@@ -119,11 +119,11 @@ fun rookTrajectory(start: Square, end: Square): List<Square> =
 fun bishopMoveNumber(start: Square, end: Square): Int {
     if (!end.inside() || !start.inside()) throw IllegalArgumentException()
     return when {
-        (start.column + start.row) % 2 != (end.column - end.row) % 2
+        (start.column + start.row) % 2 != (end.column + end.row) % 2
         -> -1
         start == end -> 0
-        (start.column - start.row == end.column - end.row) ||
-                (start.column + start.row == end.column + end.row) -> 1
+        (abs(start.column - start.row) == abs(end.column - end.row) ||
+                (start.column + start.row == end.column + end.row)) -> 1
         else -> 2
     }
 }

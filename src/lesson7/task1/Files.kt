@@ -141,7 +141,9 @@ fun centerFile(inputName: String, outputName: String) {
  * 7) В самой длинной строке каждая пара соседних слов должна быть отделена В ТОЧНОСТИ одним пробелом
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
-fun alignFileByWidth(inputName: String, outputName: String) = { TODO() }
+fun alignFileByWidth(inputName: String, outputName: String) {
+    TODO()
+}
 
 /**
  * Средняя
@@ -165,7 +167,7 @@ fun alignFileByWidth(inputName: String, outputName: String) = { TODO() }
 fun top20Words(inputName: String): Map<String, Int> = TODO()
 
 /**
- * Средняя
+ * СредняяD
  *
  * Реализовать транслитерацию текста из входного файла в выходной файл посредством динамически задаваемых правил.
 
@@ -454,4 +456,5 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
+
 
