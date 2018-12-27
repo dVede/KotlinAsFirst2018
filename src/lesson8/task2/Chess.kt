@@ -39,7 +39,7 @@ data class Square(val column: Int, val row: Int) {
  */
 fun square(notation: String): Square =
         if (Regex("""^[a-h]^[1-8]""").matches(notation)) throw IllegalArgumentException()
-        else Square((notation[0] - 'a') + 1, notation[1] - '0')
+        else Square(notation[0] - 'a' + 1, notation[1] - '0')
 
 /**
  * Простая
@@ -122,8 +122,7 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
         (start.column + start.row) % 2 != (end.column + end.row) % 2
         -> -1
         start == end -> 0
-        (abs(start.column - start.row) == abs(end.column - end.row) ||
-                (start.column + start.row == end.column + end.row)) -> 1
+        (abs(start.column - end.column) == abs(start.row - end.row)) -> 1
         else -> 2
     }
 }
