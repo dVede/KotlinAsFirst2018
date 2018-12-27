@@ -154,14 +154,18 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> =
         }
 
 fun threeTrajectoryHops(start: Square, end: Square): Square {
-    var column = start.column
-    var row = start.row
-    while (abs(end.column - column) != abs(end.row - row)) {
-        column++
-        if (end.row > start.row) row++ else row--
+    val p = (start.row + start.column - end.row + end.column) / 2
+    val m = (start.row + start.column + end.row - end.column) / 2
+    val p1 = (end.row + end.column - start.row + start.column) / 2
+    val m1 = (end.row + end.column + start.row - start.column) / 2
+    return when {
+        (p in 1..8) && (m in 1..8) && (p1 in 1..8) && (m1 in 1..8) -> Square(p, m)
+        (p in 1..8) && (m in 1..8) && ((p1 !in 1..8) || (m1 !in 1..8)) -> Square(p, m)
+        ((p !in 1..8) || (m !in 1..8)) && (p1 in 1..8) && (m1 in 1..8) -> Square(p1, m1)
+        else -> {
+            Square(0, 0)
+        }
     }
-    if (Square(column, row).inside()) return Square(column, row)
-    return Square(2 * start.column - column, row)
 }
 
 /**
