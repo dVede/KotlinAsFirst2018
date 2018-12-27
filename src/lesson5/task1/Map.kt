@@ -339,7 +339,7 @@ data class Treasure(val name: String, val mas: Int, val cost: Int)
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     var res = setOf<String>()
-    var treasure = mutableListOf<Treasure>()
+    val treasure = mutableListOf<Treasure>()
     (0 until treasures.size).forEach { i ->
         treasure.add(i, Treasure(treasures.keys.toList()[i], treasures.values.toList()[i].first, treasures.values.toList()[i].second))
     }

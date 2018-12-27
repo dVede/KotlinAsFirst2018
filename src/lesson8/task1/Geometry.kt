@@ -251,33 +251,34 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle {
-    if (points.isEmpty())
-        throw IllegalArgumentException()
-    if (points.size == 1)
-        return Circle(points[0], 0.0)
-    if (points.size == 2)
-        return circleByDiameter(Segment(points[0], points[1]))
-    var check1 = true
-    var minRadius = circleByThreePoints(points[0], points[1], points[2])
-    (0 until points.size - 2).forEach { i ->
-        (i + 1 until points.size - 1).forEach { j ->
-            (j + 1 until points.size).forEach { k ->
-                val circle = circleByThreePoints(points[i], points[j], points[k])
-                if (points.all { circle.contains(it) } && (check1 || circle.radius < minRadius.radius)) {
-                    minRadius = circle
-                    check1 = false
+    when {
+        points.isEmpty() -> throw IllegalArgumentException()
+        points.size == 1 -> return Circle(points[0], 0.0)
+        points.size == 2 -> return circleByDiameter(Segment(points[0], points[1]))
+        else -> {
+            var check1 = true
+            var minRadius = circleByThreePoints(points[0], points[1], points[2])
+            (0 until points.size - 2).forEach { i ->
+                (i + 1 until points.size - 1).forEach { j ->
+                    (j + 1 until points.size).forEach { k ->
+                        val circle = circleByThreePoints(points[i], points[j], points[k])
+                        if (points.all { circle.contains(it) } && (check1 || circle.radius < minRadius.radius)) {
+                            minRadius = circle
+                            check1 = false
+                        }
+                    }
                 }
             }
+            (0 until points.size - 1).forEach { i ->
+                (i + 1 until points.size).forEach { j ->
+                    val circle = circleByDiameter(Segment(points[i], points[j]))
+                    if (points.all { circle.contains(it) } && circle.radius < minRadius.radius)
+                        minRadius = circle
+                }
+            }
+            return minRadius
         }
     }
-    (0 until points.size - 1).forEach { i ->
-        (i + 1 until points.size).forEach { j ->
-            val circle = circleByDiameter(Segment(points[i], points[j]))
-            if (points.all { circle.contains(it) } && circle.radius < minRadius.radius)
-                minRadius = circle
-        }
-    }
-    return minRadius
 }
 
 

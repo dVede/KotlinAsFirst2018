@@ -105,10 +105,10 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    val lines = File(inputName).readLines().map { it.trim() }
-    val maxLength = lines.map { it.length }.max() ?: 0
+    val text = File(inputName).readLines().map { it.trim() }
+    val maxLength = text.map { it.length }.max() ?: 0
     File(outputName).writeText(
-            lines.joinToString("\n") {
+            text.joinToString("\n") {
                 " ".repeat((maxLength - it.length) / 2) + it
             }
     )
