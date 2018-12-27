@@ -38,7 +38,7 @@ data class Square(val column: Int, val row: Int) {
  * Если нотация некорректна, бросить IllegalArgumentException
  */
 fun square(notation: String): Square =
-        if (Regex("^[a-h]^[1-8]").matches(notation)) throw IllegalArgumentException()
+        if (Regex("""^[a-h]^[1-8]""").matches(notation)) throw IllegalArgumentException()
         else Square((notation[0] - 'a') + 1, notation[1] - '0')
 
 /**

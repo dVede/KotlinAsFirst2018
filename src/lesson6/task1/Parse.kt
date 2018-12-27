@@ -291,7 +291,18 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val commandsList = commands.split(Regex("")).filter { (it != "") }
     val end = mutableListOf<Int>()
     var commandsDone = 0
+    var bracket = 0
     if (commandsList.count { it == "]" } != commandsList.count { it == "[" }) throw IllegalArgumentException()
+    commands.forEach {
+        when (it) {
+            '[' -> bracket++
+            ']' -> bracket--
+        }
+    }
+    when {
+        bracket < 0 -> IllegalArgumentException()
+        bracket > 0 -> IllegalArgumentException()
+    }
     var position = cells / 2
     for (j in 0 until cells) end.add(0)
     var j = 0

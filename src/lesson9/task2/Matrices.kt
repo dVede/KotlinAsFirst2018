@@ -350,21 +350,18 @@ fun sumSubMatrix(matrix: Matrix<Int>): Matrix<Int> {
  */
 fun canOpenLock(key: Matrix<Int>, lock: Matrix<Int>): Triple<Boolean, Int, Int> {
     for (width in 0..lock.width - key.width)
-        for (heigh in 0..lock.height - key.height)
-            if (canOpen(width, heigh, key, lock)) return Triple(true, width, heigh)
-    return Triple(false, 11, 11)
-}
-
-fun canOpen(width: Int, heigh: Int, key: Matrix<Int>, lock: Matrix<Int>): Boolean {
-    (0 until key.width).forEach { i ->
-        (0 until key.height).forEach { j ->
-            if (key[i, j] == lock[width + i, heigh + j])
-                return false
+        for (heigh in 0..lock.height - key.height) {
+            var check = true
+            for (i in 0 until key.width)
+                for (j in 0 until key.height)
+                    if (key[i, j] == lock[width + i, heigh + j]) {
+                        check = false
+                        break
+                    }
+            if (check) return Triple(check, width, heigh)
         }
-    }
-    return true
+return Triple(false, 11, 11)
 }
-
 /**
  * Простая
  *
